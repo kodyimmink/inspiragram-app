@@ -1,6 +1,6 @@
 import authSchema from '../db/schema/authSchema.js';
 
-const signUpValidator = async (req, res, next) => {
+const authValidator = async (req, res, next) => {
     try {
         await authSchema.validateAsync(req.body);
     } catch (error){
@@ -9,4 +9,4 @@ const signUpValidator = async (req, res, next) => {
     next();
 };
 
-export { signUpValidator };
+export { authValidator };

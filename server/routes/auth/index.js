@@ -1,18 +1,22 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { users, db } from '../../db/connection.js';
-import { signUpValidator } from '../../validation/validators.js';
+import { users } from '../../db/connection.js';
+import { authValidator } from '../../validation/validators.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+dotenv.config()
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        message: 'Authorization Route'
-    })
-})
+//login failed error message
+function loginFailedError(res, next) {
+    res.status(403);
+    const error = new Error('Login failed.');
+    next(error);
+  }
 
 //signup route, validate input
-router.post('/signup', signUpValidator, (req, res, next) => {
+router.post('/signup', authValidator, (req, res, next) => {
 
     //check if already exists
     users.findOne({
@@ -33,11 +37,44 @@ router.post('/signup', signUpValidator, (req, res, next) => {
                 users.insert(newUser).then( insertedUser => {
                     delete insertedUser.password;
                     //maybe return just _id and username explictly?
-                    res.json(insertedUser)
+                    res.json(insertedUser);
                 })
             })
         }
     });
+})
+
+//login route, validate input
+router.post('/login', authValidator, (req, res, next) => {
+    
+    //check if user is in db
+    users.findOne({
+        username: req.body.username
+    }).then( user => {
+        //username is valid
+        if (user) {
+            bcrypt.compare(req.body.password, user.password).then( result => {
+                if (result){
+                    //create jwt
+                    const payload = {
+                        _id: user._id,
+                        username: user.username
+                    }
+                    jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1d' }, (error, token) => {
+                        if(error){
+                            loginFailedError(res, next);
+                        } else {
+                            res.json({token});
+                        }
+                    })
+                } else {
+                    loginFailedError(res, next);
+                }
+            })
+        } else {
+            loginFailedError(res, next);
+        }
+    })
 })
 
 export { router as authRoute };

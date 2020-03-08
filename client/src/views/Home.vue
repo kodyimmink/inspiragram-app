@@ -5,7 +5,16 @@
       <router-link 
         class="btn btn-primary btn-lg"
         :to="{ name: 'SignUp' }"
-        role="button">Sign Up
+        role="button"
+      >
+        Sign Up
+      </router-link>
+      <router-link 
+        class="btn btn-primary btn-lg"
+        :to="{ name: 'Login' }"
+        role="button"
+      >
+        Login
       </router-link>
     </div>
   </div>

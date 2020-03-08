@@ -1,70 +1,83 @@
 <template>
-    <div>
-        <h1 class="d-inline">Sign Up</h1>
-        <span class="d-inline align-top" v-if="signingUp">
-            <img height="100px" src="../assets/loading.svg" />
-        </span>
-        <div 
-            v-if="errorMessage"
-            class="alert alert-danger"
-            role="alert">
-            {{ errorMessage }}
-        </div>
-        <form @submit.prevent="signUp">
-            <div class="form-group">
-                <input
-                    v-model="user.username" 
-                    type="username" 
-                    class="form-control" 
-                    id="username" 
-                    aria-describedby="usernameHelp"
-                    placeholder="username"
-                    required
-                >
-                <small
-                    id="usernameHelp"
-                    class="form-text text-muted">
-                    Username must be between 2 and 30 characters in length.
-                    It cannot include any special characters other than an underscore.
-                </small>
-            </div>
-            <div class="form-group">
-                <input
-                    v-model="user.password"
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    aria-describedby="passwordHelp"
-                    placeholder="password"
-                    required
-                >
-                <small
-                    id="passwordHelp"
-                    class="form-text text-muted">
-                    Password must be at least 10 characters in length.
-                </small>
-            </div>
-            <div class="form-group">
-                <input
-                    v-model="user.confirmPassword"
-                    type="password"
-                    class="form-control"
-                    id="confirmPassword"
-                    aria-describedby="confirmPassword"
-                    placeholder="re-enter password" 
-                    required
-                >
-            </div>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>    
+  <div>
+    <h1 class="d-inline">
+      Sign Up
+    </h1>
+    <span
+      v-if="signingUp"
+      class="d-inline"
+    >
+      <img
+        height="100px"
+        src="../assets/loading.svg"
+      >
+    </span>
+    <div 
+      v-if="errorMessage"
+      class="alert alert-danger"
+      role="alert"
+    >
+      {{ errorMessage }}
     </div>
+    <form @submit.prevent="signUp">
+      <div class="form-group">
+        <input
+          id="username" 
+          v-model="user.username" 
+          type="username" 
+          class="form-control" 
+          aria-describedby="usernameHelp"
+          placeholder="username"
+          required
+        >
+        <small
+          id="usernameHelp"
+          class="form-text text-muted"
+        >
+          Username must be between 2 and 30 characters in length.
+          It cannot include any special characters other than an underscore.
+        </small>
+      </div>
+      <div class="form-group">
+        <input
+          id="password"
+          v-model="user.password"
+          type="password"
+          class="form-control"
+          aria-describedby="passwordHelp"
+          placeholder="password"
+          required
+        >
+        <small
+          id="passwordHelp"
+          class="form-text text-muted"
+        >
+          Password must be at least 10 characters in length.
+        </small>
+      </div>
+      <div class="form-group">
+        <input
+          id="confirmPassword"
+          v-model="user.confirmPassword"
+          type="password"
+          class="form-control"
+          aria-describedby="confirmPassword"
+          placeholder="re-enter password" 
+          required
+        >
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        Sign Up
+      </button>
+    </form>    
+  </div>
 </template>
 
 <script>
 import Joi from '@hapi/joi';
-//import Joi from 'joi';
-
-const BACKEND_URL = 'http://localhost:5000/auth/signup';
 
 const schema = Joi.object().keys({
     username: Joi.string().regex(/(^[a-zA-Z0-9]+$)/).min(2).max(30).required(),
@@ -99,9 +112,8 @@ export default {
                     password: this.user.password
                 };
                 this.signingUp = true;
-                //send data to server
-                //should use env variable
-                fetch(BACKEND_URL, {
+                //send to backend
+                fetch(process.env.VUE_APP_BACKEND_URL + '/auth/signup', {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/json'
@@ -114,16 +126,18 @@ export default {
                     //handle error
                     return response.json().then( (error) => {
                         throw new Error(error.message)
-                    }).then( user => {
-                        this.signingUp = false;
-                        //re-route to login
-                        this.$router.push('/login');
-                    }).catch( error => {
-                         this.signingUp = false;
-                        this.errorMessage = error.message
-                    });
-                })
-
+                    })
+                }).then( () => {
+                    setTimeout( () => {
+                      this.signingUp = false;
+                      this.$router.push('/login');
+                    }, 1000);
+                  }).catch( (error) => {
+                    setTimeout( () => {
+                      this.signingUp = false;
+                      this.errorMessage = error.message
+                    }, 1000);
+                  });
             }
         },
         validUser() {

@@ -5,76 +5,76 @@ import { authValidator } from '../../validation/validators.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 const router = express.Router();
 
 //login failed error message
 function loginFailedError(res, next) {
-    res.status(403);
-    const error = new Error('Login failed.');
-    next(error);
-  }
+  res.status(403);
+  const error = new Error('Login failed.');
+  next(error);
+}
 
 //signup route, validate input
 router.post('/signup', authValidator, (req, res, next) => {
 
-    //check if already exists
-    users.findOne({
-        username: req.body.username
-    }).then( user => {
-        if (user){
-            //username already exists
-            const error = new Error('Username already exists.')
-            res.status(409);
-            next(error);
-        } else {
-            bcrypt.hash(req.body.password, 12).then( hashedPassword => {
-                const newUser = {
-                    username: req.body.username,
-                    password: hashedPassword
-                }
-                //insert new user in db
-                users.insert(newUser).then( insertedUser => {
-                    delete insertedUser.password;
-                    //maybe return just _id and username explictly?
-                    res.json(insertedUser);
-                })
-            })
-        }
-    });
-})
+  //check if already exists
+  users.findOne({
+    username: req.body.username
+  }).then( user => {
+    if (user){
+      //username already exists
+      const error = new Error('Username already exists.');
+      res.status(409);
+      next(error);
+    } else {
+      bcrypt.hash(req.body.password, 12).then( hashedPassword => {
+        const newUser = {
+          username: req.body.username,
+          password: hashedPassword
+        };
+        //insert new user in db
+        users.insert(newUser).then( insertedUser => {
+          delete insertedUser.password;
+          //maybe return just _id and username explictly?
+          res.json(insertedUser);
+        });
+      });
+    }
+  });
+});
 
 //login route, validate input
 router.post('/login', authValidator, (req, res, next) => {
     
-    //check if user is in db
-    users.findOne({
-        username: req.body.username
-    }).then( user => {
-        //username is valid
-        if (user) {
-            bcrypt.compare(req.body.password, user.password).then( result => {
-                if (result){
-                    //create jwt
-                    const payload = {
-                        _id: user._id,
-                        username: user.username
-                    }
-                    jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1d' }, (error, token) => {
-                        if(error){
-                            loginFailedError(res, next);
-                        } else {
-                            res.json({token});
-                        }
-                    })
-                } else {
-                    loginFailedError(res, next);
-                }
-            })
+  //check if user is in db
+  users.findOne({
+    username: req.body.username
+  }).then( user => {
+    //username is valid
+    if (user) {
+      bcrypt.compare(req.body.password, user.password).then( result => {
+        if (result){
+          //create jwt
+          const payload = {
+            _id: user._id,
+            username: user.username
+          };
+          jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1d' }, (error, token) => {
+            if(error){
+              loginFailedError(res, next);
+            } else {
+              res.json({token});
+            }
+          });
         } else {
-            loginFailedError(res, next);
+          loginFailedError(res, next);
         }
-    })
-})
+      });
+    } else {
+      loginFailedError(res, next);
+    }
+  });
+});
 
 export { router as authRoute };

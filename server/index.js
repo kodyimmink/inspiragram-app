@@ -9,8 +9,8 @@ import { authRoute } from './routes/auth/index.js';
 //middleware
 app.use(volleyball);
 app.use(cors({
-    origin: 'http://localhost:8080'
-  }));
+  origin: 'http://localhost:8080'
+}));
 app.use(express.json());
 
 
@@ -29,12 +29,13 @@ function notFound(req, res, next) {
   next(error);
 }
 
-function errorHandler(err, req, res, next) {
+function errorHandler(error, req, res, next) {
   res.status(res.statusCode || 500);
   res.json({
-    message: err.message,
-    stack: err.stack
+    message: error.message,
+    stack: error.stack
   });
+  next();
 }
 
 app.use(notFound);

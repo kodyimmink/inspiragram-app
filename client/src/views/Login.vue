@@ -120,7 +120,7 @@ export default {
               localStorage.token = result.token;
               setTimeout( () => {
                 this.loggingIn = false;
-                //this.$router.push('/dashboard');
+                this.$router.push('/dashboard');
               }, 1000);
             }).catch( (error) => {
               setTimeout( () => {

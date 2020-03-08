@@ -5,11 +5,32 @@
         class="navbar-brand"
         href="/"
       >Inspiragram</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <button 
+          v-on:click="logout"
+          class="btn btn-outline-danger my-2 my-sm-0"
+          type="button"
+        >
+          Logout
+        </button>
+      </div>
     </nav>
     <router-view class="container-fluid pt-3" />
   </div>
 </template>
 
+<script>
+export default {
+  methods: {
+    logout: () => {
+      localStorage.removeItem('token');
+      location.reload();
+    }
+  }
+}
+</script>
 <style>
 
 </style>

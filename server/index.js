@@ -1,5 +1,6 @@
 import express from 'express';
 import volleyball from 'volleyball';
+import cors from 'cors';
 
 const app = express();
 
@@ -7,6 +8,9 @@ import { authRoute } from './routes/auth/index.js';
 
 //middleware
 app.use(volleyball);
+app.use(cors({
+    origin: 'http://localhost:8080'
+  }));
 app.use(express.json());
 
 

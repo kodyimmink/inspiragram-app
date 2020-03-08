@@ -21,16 +21,18 @@ router.post('/signup', signUpValidator, (req, res, next) => {
         if (user){
             //username already exists
             const error = new Error('Username already exists.')
+            res.status(409);
             next(error);
         } else {
             bcrypt.hash(req.body.password, 12).then( hashedPassword => {
-                //insert new user in db
                 const newUser = {
                     username: req.body.username,
                     password: hashedPassword
                 }
+                //insert new user in db
                 users.insert(newUser).then( insertedUser => {
                     delete insertedUser.password;
+                    //maybe return just _id and username explictly?
                     res.json(insertedUser)
                 })
             })
@@ -39,4 +41,3 @@ router.post('/signup', signUpValidator, (req, res, next) => {
 })
 
 export { router as authRoute };
-

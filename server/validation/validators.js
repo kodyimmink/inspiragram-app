@@ -25,4 +25,14 @@ const checkTokenSetUser = (req, res, next) => {
   }
 };
 
-export { authValidator, checkTokenSetUser};
+const isLoggedIn = (req, res, next) => {
+  if(req.user){
+    next();
+  } else {
+    res.status(401);
+    const error = new Error('Unauthorized.');
+    next(error);
+  }
+};
+
+export { authValidator, checkTokenSetUser, isLoggedIn};

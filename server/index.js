@@ -1,6 +1,7 @@
 import express from 'express';
 import volleyball from 'volleyball';
 import cors from 'cors';
+import { checkTokenSetUser } from './validation/validators.js';
 
 const app = express();
 
@@ -12,11 +13,13 @@ app.use(cors({
   origin: 'http://localhost:8080'
 }));
 app.use(express.json());
+app.use(checkTokenSetUser);
 
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Backend is running!'
+    message: 'Backend is running!',
+    user: req.user,
   });
 });
 

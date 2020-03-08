@@ -15,6 +15,21 @@ function loginFailedError(res, next) {
   next(error);
 }
 
+//create jwt and send to frontend
+function createTokenSendResponse(user, res, next){
+  const payload = {
+    _id: user._id,
+    username: user.username
+  };
+  jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1d' }, (error, token) => {
+    if(error){
+      loginFailedError(res, next);
+    } else {
+      res.json({token});
+    }
+  });
+}
+
 //signup route, validate input
 router.post('/signup', authValidator, (req, res, next) => {
 
@@ -35,9 +50,7 @@ router.post('/signup', authValidator, (req, res, next) => {
         };
         //insert new user in db
         users.insert(newUser).then( insertedUser => {
-          delete insertedUser.password;
-          //maybe return just _id and username explictly?
-          res.json(insertedUser);
+          createTokenSendResponse(insertedUser, res, next);
         });
       });
     }
@@ -56,17 +69,7 @@ router.post('/login', authValidator, (req, res, next) => {
       bcrypt.compare(req.body.password, user.password).then( result => {
         if (result){
           //create jwt
-          const payload = {
-            _id: user._id,
-            username: user.username
-          };
-          jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1d' }, (error, token) => {
-            if(error){
-              loginFailedError(res, next);
-            } else {
-              res.json({token});
-            }
-          });
+          createTokenSendResponse(user, res, next);
         } else {
           loginFailedError(res, next);
         }

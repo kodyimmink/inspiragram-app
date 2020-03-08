@@ -19,7 +19,10 @@
     >
       {{ errorMessage }}
     </div>
-    <form v-if="!loggingIn" @submit.prevent="login">
+    <form
+      v-if="!loggingIn"
+      @submit.prevent="login"
+    >
       <div class="form-group">
         <input
           id="username" 

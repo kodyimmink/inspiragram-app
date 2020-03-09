@@ -113,7 +113,7 @@ export default {
                 };
                 this.signingUp = true;
                 //send to backend
-                fetch(process.env.VUE_APP_BACKEND_URL + '/auth/signup', {
+                fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/signup`, {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/json'

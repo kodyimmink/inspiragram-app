@@ -102,7 +102,7 @@ export default {
         };
         this.loggingIn = true;
         //send to backend
-        fetch(process.env.VUE_APP_BACKEND_URL + '/auth/login', {
+        fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/login`, {
           method: 'POST',
           headers: {
             'content-type': 'application/json'

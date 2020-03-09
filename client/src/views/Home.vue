@@ -17,12 +17,19 @@
         Login
       </router-link>
     </div>
+    <!-- <div>
+      <Inspiration />
+    </div> -->
   </div>
 </template>
 
 <script>
+import Inspiration from '../components/Inspiration.js'
 
 export default {
   name: 'Home',
+  components: {
+    //Inspiration
+  },
 };
 </script>

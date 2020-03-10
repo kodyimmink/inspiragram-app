@@ -7,7 +7,7 @@ const app = express();
 
 //import routers
 import { authRoute } from './routes/auth/index.js';
-import { inspirationsRoute } from './routes/api/inspirations.js';
+import { inspirationsRoute } from './routes/api/inspirations/inspirations.js';
 
 //middleware
 app.use(volleyball);

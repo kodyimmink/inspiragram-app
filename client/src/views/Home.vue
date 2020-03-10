@@ -97,7 +97,7 @@ img {
     position: absolute;
     top: 95%;
     right: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(50%, -95%);
     width: 100%;
 }
 

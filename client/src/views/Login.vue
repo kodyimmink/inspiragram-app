@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-3">
     <h1 class="d-inline">
       Login
     </h1>

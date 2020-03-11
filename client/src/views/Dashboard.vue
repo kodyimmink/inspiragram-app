@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-3">
     <h1>Dashboard</h1>
     <h4>Hello, {{ user.username }}. Looking for some inspiration?</h4>
   </div>

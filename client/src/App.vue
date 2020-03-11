@@ -17,7 +17,7 @@
         </button>
       </div>
     </nav>
-    <router-view class="container-fluid pt-3" />
+    <router-view />
   </div>
 </template>
 

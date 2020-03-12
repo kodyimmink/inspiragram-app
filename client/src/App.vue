@@ -6,12 +6,11 @@
         href="/"
       >Inspiragram</a>
       <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-        </ul>
+        <ul class="navbar-nav mr-auto" />
         <button 
-          v-on:click="logout"
           class="btn btn-outline-danger my-2 my-sm-0"
           type="button"
+          @click="logout"
         >
           Logout
         </button>

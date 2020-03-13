@@ -1,9 +1,19 @@
 import authSchema from '../db/schema/authSchema.js';
+import inspirationSchema from '../db/schema/inspirationSchema.js';
 import jwt from 'jsonwebtoken';
 
 const authValidator = async (req, res, next) => {
   try {
     await authSchema.validateAsync(req.body);
+  } catch (error){
+    next(error);
+  }
+  next();
+};
+
+const inspirationValidator = async (req, res, next) => {
+  try {
+    await inspirationSchema.validateAsync(req.body);
   } catch (error){
     next(error);
   }
@@ -35,4 +45,4 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
-export { authValidator, checkTokenSetUser, isLoggedIn};
+export { authValidator, checkTokenSetUser, isLoggedIn, inspirationValidator};

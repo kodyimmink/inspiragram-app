@@ -8,6 +8,7 @@ const app = express();
 //import routers
 import { authRoute } from './routes/auth/index.js';
 import { inspirationsRoute } from './routes/api/inspirations/inspirations.js';
+import { likesRoute } from './routes/api/inspirations/likes.js';
 
 //middleware
 app.use(volleyball);
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 //routes
 app.use('/auth', authRoute);
 app.use('/api/v1/inspirations', isLoggedIn, inspirationsRoute);
+app.use('/api/v1/likes', isLoggedIn, likesRoute);
 
 function notFound(req, res, next) {
   res.status(404);

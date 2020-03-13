@@ -5,9 +5,10 @@ const db = monk('localhost/inspiragram-app');
 
 //collections
 const users = db.get('users');
-//const inspirations = db.get('inspirations');
+const likes = db.get('likes');
+const inspirations = db.get('inspirations');
 
 //indicies
 users.createIndex('username', {unique: true});
 
-export { db, users };
+export { users, likes, inspirations };

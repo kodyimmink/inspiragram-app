@@ -10,7 +10,7 @@
     <div class="p-3 photo-grid card-text quote">
       <div
         v-for="inspiration in inspirations"
-        :key="inspiration.image.imageUrl.toString()"
+        :key="inspiration._id"
         :class="randomClass()"
         :style="{ 'background-image': 'url(' + inspiration.image.imageUrl + ')' }"
       >
@@ -47,16 +47,23 @@ export default {
     errorMessage: '',
     inspirations : [],
     classList: ['card', 'card card-wide', 'card card-tall', 'card card-wide card-tall'],
-    likedInspirations: []
+    likedInspirations: [],
+    inspirationIds: []
   }),
   mounted() {
-    fetch(process.env.VUE_APP_BACKEND_URL + '/api/v1/inspirations', {
+    //get inspirations
+    fetch(process.env.VUE_APP_BACKEND_URL + '/api/v1/inspirations' + '?size=30', {
       headers: {
       authorization: localStorage.token,
     }
     })
     .then( response => response.json() )
-    .then( result => this.inspirations = result )
+    .then( result => { 
+      this.inspirations = result;
+      this.inspirations.forEach( element => {
+        this.inspirationIds.push(element._id);
+      }, this.getLikes())
+      })
     .catch( error => this.errorMessage = error );
   },
   methods: {
@@ -86,10 +93,6 @@ export default {
     })
     .catch(error => this.errorMessage = error );
     },
-
-    //need to generate a key on the server side of inspirations
-    //reference key when inserting and removing
-    //need to pre-generate inspirations, put in database and serve to user with key.
     unlikeInspiration(inspiration){
       fetch(process.env.VUE_APP_BACKEND_URL + '/api/v1/likes', {
         method: 'DELETE',
@@ -104,6 +107,20 @@ export default {
         this.liked = false;
         this.text = 'Like';
       })
+    },
+    getLikes(){
+      //get likes
+      const body = { inspirationIds: this.inspirationIds };
+      fetch(process.env.VUE_APP_BACKEND_URL + '/api/v1/likes/getLikes', {
+        headers: {
+        authorization: localStorage.token,
+        'content-type': 'application/json',
+      },
+        method: 'POST',
+        body: JSON.stringify(body),
+      })
+      .then( response => response.json() )
+      .catch( error => this.errorMessage = error );
     }
   }
 };
